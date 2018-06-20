@@ -87,7 +87,11 @@ module.exports = (compiler, opts) => {
 
   wss.broadcast = broadcast;
 
-  if (options.server) {
+  if (options.publicPath) {
+    options.webSocket = {
+      publicPath: options.publicPath
+    };
+  } else if (options.server) {
     options.webSocket = {
       host: wss._server.address().address, // eslint-disable-line no-underscore-dangle
       port: wss._server.address().port // eslint-disable-line no-underscore-dangle
@@ -155,7 +159,7 @@ module.exports = (compiler, opts) => {
 
   wss.on('listening', () => {
     // eslint-disable-next-line no-shadow
-    const { host, port } = options;
+    const { address: host, port } = wss._server.address(); // eslint-disable-line no-underscore-dangle
     log.info(`WebSocket Server Listening at ${host.server}:${port}`);
   });
 
